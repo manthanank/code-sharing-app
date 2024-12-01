@@ -1,0 +1,9 @@
+<div class="snippet-list">
+    <div class="header">
+        <h2>Code Snippets</h2>
+        <button class="add-snippet-btn" (click)="addSnippet()">Add Snippet</button>
+    </div>
+    @for (snippet of snippets; track $index) {
+    <pre>{{ snippet.content }}</pre>
+    }
+</div>

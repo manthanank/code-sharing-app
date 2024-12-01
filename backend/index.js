@@ -26,20 +26,10 @@ mongoose
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
-// Socket.IO for real-time collaboration
-io.on("connection", (socket) => {
-  console.log("User connected:", socket.id);
-
-  socket.on("code-change", ({ snippetId, code }) => {
-    socket.broadcast.emit(`code-update-${snippetId}`, code);
-  });
-
-  socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
-  });
-});
-
 // Routes
+app.get("", (req, res) => {
+  res.send("API is running....");
+});
 app.use("/api/snippets", require("./routes/snippetRoutes"));
 app.use("/api/auth", require("./routes/authRoutes.js"));
 
