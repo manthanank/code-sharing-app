@@ -15,14 +15,11 @@ export class AppComponent {
 
   constructor() {
     this.meta.addTags([
-      { name: 'keywords', content: 'Angular' },
       {
         name: 'description',
         content:
           'A simple Code Sharing App built using Angular, Node.js, Express, and MongoDB.',
       },
-      { name: 'robots', content: 'index, follow' },
-      { name: 'author', content: 'Manthan Ankolekar' },
       { charset: 'UTF-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { rel: 'icon', type: 'image/x-icon', href: 'favicon.ico' },
