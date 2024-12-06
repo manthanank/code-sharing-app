@@ -33,6 +33,19 @@ app.get("", (req, res) => {
 app.use("/api/snippets", require("./routes/snippetRoutes"));
 app.use("/api/auth", require("./routes/authRoutes.js"));
 
+let users = {};
+
+// socket.io connection
+io.on('connection', (socket) => {
+  console.log(`User connected: ${socket.id}`);
+  users[socket.id] = socket;
+
+  socket.on('disconnect', () => {
+    console.log(`User disconnected: ${socket.id}`);
+    delete users[socket.id];
+  });
+});
+
 // Start server
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log(`Server running on port ${PORT}`));

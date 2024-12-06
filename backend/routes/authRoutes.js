@@ -4,9 +4,11 @@ const { verifyToken } = require('../middleware/authMiddleware');
 
 const router = express.Router();
 
+const useSocket = (handler) => (req, res) => handler(req, res, req.app.get('io'));
+
 // Authentication Routes
-router.post('/register', register);
-router.post('/login', login);
-router.get('/me', verifyToken, getCurrentUser);
+router.post('/register', useSocket(register));
+router.post('/login', useSocket(login));
+router.get('/me', verifyToken, useSocket(getCurrentUser));
 
 module.exports = router;

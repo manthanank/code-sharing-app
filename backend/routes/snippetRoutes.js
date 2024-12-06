@@ -8,9 +8,11 @@ const {
 } = require("../controllers/snippetController");
 const router = express.Router();
 
-router.get("/", getSnippets);
-router.post("/", verifyToken, createSnippet);
-router.get("/:id", getSnippet);
-router.put("/:id", verifyToken, updateSnippet);
+const useSocket = (handler) => (req, res) => handler(req, res, req.app.get('io'));
+
+router.get("/", useSocket(getSnippets));
+router.post("/", verifyToken, useSocket(createSnippet));
+router.get("/:id", useSocket(getSnippet));
+router.put("/:id", verifyToken, useSocket(updateSnippet));
 
 module.exports = router;

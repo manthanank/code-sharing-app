@@ -3,7 +3,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
 // Register User
-exports.register = async (req, res) => {
+exports.register = async (req, res, io) => {
   const { email, password } = req.body;
 
   try {
@@ -18,6 +18,8 @@ exports.register = async (req, res) => {
       expiresIn: '1h',
     });
 
+    io.emit('newUser', newUser);
+
     res.status(201).json({
       token,
       user: {
@@ -31,7 +33,7 @@ exports.register = async (req, res) => {
 };
 
 // Login User
-exports.login = async (req, res) => {
+exports.login = async (req, res, io) => {
   const { email, password } = req.body;
 
   try {
@@ -44,6 +46,8 @@ exports.login = async (req, res) => {
     const token = jwt.sign({ id: user._id, email: user.email }, process.env.JWT_SECRET, {
       expiresIn: '1h',
     });
+
+    io.emit('login', user);
 
     res.status(200).json(
       {
@@ -60,11 +64,11 @@ exports.login = async (req, res) => {
 };
 
 // Get Current User
-exports.getCurrentUser = async (req, res) => {
+exports.getCurrentUser = async (req, res, io) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ error: 'User not found' });
-
+    io.emit('getUser', user);
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: 'Server error' });

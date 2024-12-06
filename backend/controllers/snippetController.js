@@ -1,6 +1,6 @@
 const Snippet = require("../models/Snippet");
 
-exports.getSnippets = async (req, res) => {
+exports.getSnippets = async (req, res, io) => {
   const page = req.query.page || 1;
   const limit = req.query.limit || 10;
 
@@ -9,6 +9,7 @@ exports.getSnippets = async (req, res) => {
     .limit(parseInt(limit));
 
   const totalSnippets = await Snippet.countDocuments();
+  io.emit("getSnippets", snippets);
   res.json({
     currentPage: parseInt(page),
     totalPages: Math.ceil(totalSnippets / limit),
@@ -16,21 +17,23 @@ exports.getSnippets = async (req, res) => {
   });
 };
 
-exports.createSnippet = async (req, res) => {
+exports.createSnippet = async (req, res, io) => {
   const snippet = new Snippet({ ...req.body, author: req.user.id });
   await snippet.save();
+  io.emit("createSnippet", snippet);
   res.status(201).json(snippet);
 };
 
-exports.getSnippet = async (req, res) => {
+exports.getSnippet = async (req, res, io) => {
   const snippet = await Snippet.findById(req.params.id);
   if (!snippet) {
     return res.status(404).json({ message: "Snippet not found" });
   }
+  io.emit("getSnippet", snippet);
   res.json(snippet);
 };
 
-exports.updateSnippet = async (req, res) => {
+exports.updateSnippet = async (req, res, io) => {
   const snippet = await Snippet.findById(req.params.id);
   if (!snippet) {
     return res.status(404).json({ message: "Snippet not found" });
@@ -42,5 +45,6 @@ exports.updateSnippet = async (req, res) => {
   }
   snippet.set(req.body);
   await snippet.save();
+  io.emit("updateSnippet", snippet);
   res.json(snippet);
 };
