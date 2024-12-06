@@ -18,7 +18,7 @@ exports.register = async (req, res, io) => {
       expiresIn: '1h',
     });
 
-    io.emit('newUser', newUser);
+    if (io) io.emit('newUser', { id: newUser._id, email: newUser.email });
 
     res.status(201).json({
       token,
@@ -47,17 +47,15 @@ exports.login = async (req, res, io) => {
       expiresIn: '1h',
     });
 
-    io.emit('login', user);
+    if (io) io.emit('login', { id: user._id, email: user.email });
 
-    res.status(200).json(
-      {
-        token,
-        user: {
-          id: user._id,
-          email: user.email,
-        },
+    res.status(200).json({
+      token,
+      user: {
+        id: user._id,
+        email: user.email,
       },
-    );
+    });
   } catch (error) {
     res.status(500).json({ error: 'Server error' });
   }
@@ -68,7 +66,9 @@ exports.getCurrentUser = async (req, res, io) => {
   try {
     const user = await User.findById(req.user.id).select('-password');
     if (!user) return res.status(404).json({ error: 'User not found' });
-    io.emit('getUser', user);
+
+    if (io) io.emit('getUser', { id: user._id, email: user.email });
+
     res.status(200).json(user);
   } catch (error) {
     res.status(500).json({ error: 'Server error' });

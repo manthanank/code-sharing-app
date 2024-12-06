@@ -3,13 +3,13 @@ const http = require("http");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
-const { Server } = require("socket.io");
+const socketIo = require("socket.io");
 
 dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = new Server(server);
+const io = socketIo(server);
 
 app.use(cors());
 app.use(express.json());
@@ -26,6 +26,7 @@ mongoose
   .then(() => console.log("MongoDB connected successfully"))
   .catch((err) => console.error("MongoDB connection error:", err));
 
+app.set("io", io);
 // Routes
 app.get("", (req, res) => {
   res.send("API is running....");
@@ -36,11 +37,11 @@ app.use("/api/auth", require("./routes/authRoutes.js"));
 let users = {};
 
 // socket.io connection
-io.on('connection', (socket) => {
+io.on("connection", (socket) => {
   console.log(`User connected: ${socket.id}`);
   users[socket.id] = socket;
 
-  socket.on('disconnect', () => {
+  socket.on("disconnect", () => {
     console.log(`User disconnected: ${socket.id}`);
     delete users[socket.id];
   });
