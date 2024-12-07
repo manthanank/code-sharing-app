@@ -9,14 +9,27 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server,{
+const io = socketIo(server, {
   cors: {
-    origin: "*",
+    origin: [
+      "http://localhost:3000",
+      "https://code-sharing-app-manthanank.vercel.app",
+    ],
     methods: ["GET", "POST", "PUT", "DELETE"],
+    allowedHeaders: ["Content-Type"],
+    credentials: true,
   },
 });
 
-app.use(cors({ origin: "*" }));
+app.use(cors({
+  origin: [
+    "http://localhost:3000",
+    "https://code-sharing-app-manthanank.vercel.app",
+  ],
+  methods: ["GET", "POST", "PUT", "DELETE"],
+  allowedHeaders: ["Content-Type"],
+  credentials: true,
+}));
 app.use(express.json());
 
 // MongoDB connection
