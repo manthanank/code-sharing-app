@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 
@@ -10,11 +10,14 @@ import { AuthService } from '../../services/auth.service';
 })
 export class NavbarComponent {
   isLoggedIn: boolean = false;
-  constructor(private authService: AuthService, private router: Router) {
-    this.isLoggedIn = this.authService.isLoggedIn();
+  auth = inject(AuthService);
+  router = inject(Router);
+
+  constructor() {
+    this.isLoggedIn = this.auth.isLoggedIn();
   }
   logout() {
-    this.authService.logout();
+    this.auth.logout();
     this.isLoggedIn = false;
     this.router.navigate(['/login']);
   }

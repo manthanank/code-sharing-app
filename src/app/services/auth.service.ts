@@ -1,8 +1,9 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../environments/environment.development';
+import { SocketService } from './socket.service';
 
 @Injectable({
   providedIn: 'root',
@@ -11,7 +12,10 @@ export class AuthService {
   private baseUrl = environment.apiUrl + '/auth';
   private token = new BehaviorSubject<string | null>(null);
 
-  constructor(private http: HttpClient) {}
+  http = inject(HttpClient);
+  socket = inject(SocketService);
+
+  constructor() {}
 
   register(email: string, password: string): Observable<any> {
     return this.http.post(`${this.baseUrl}/register`, { email, password });

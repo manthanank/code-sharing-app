@@ -27,5 +27,12 @@ export const routes: Routes = [
         (m) => m.AddSnippetComponent
       ),
   },
+  {
+    path: 'snippets/edit/:id',
+    loadComponent: () =>
+      import('./components/snippets/edit-snippet/edit-snippet.component').then(
+        (m) => m.EditSnippetComponent
+      ),
+  },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];

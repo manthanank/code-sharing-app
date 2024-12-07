@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { io, Socket } from 'socket.io-client';
 import { environment } from '../../environments/environment.development';
+import { Observable } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +14,47 @@ export class SocketService {
     this.socket = io(this.socketUrl);
   }
 
-  onCodeChange(callback: (data: any) => void): void {
-    this.socket.on('code-update', callback);
+  emitNewUser(data: any): void {
+    this.socket.emit('newUser', data);
   }
 
-  emitCodeChange(snippetId: string, code: string): void {
-    this.socket.emit('code-change', { snippetId, code });
+  emitLogin(data: any): void {
+    this.socket.emit('login', data);
+  }
+
+  emitGetUser(id: string): void {
+    this.socket.emit('getUser', id);
+  }
+
+  emitGetSnippets(): void {
+    this.socket.emit('getSnippets');
+  }
+
+  emitCreateSnippet(data: any): void {
+    this.socket.emit('createSnippet', data);
+  }
+
+  emitGetSnippet(id: string): void {
+    this.socket.emit('getSnippet', id);
+  }
+
+  emitUpdateSnippet(data: any): void {
+    this.socket.emit('updateSnippet', data);
+  }
+
+  emitDeleteSnippet(id: string): void {
+    this.socket.emit('deleteSnippet', id);
+  }
+
+  on(event: string): Observable<any> {
+    return new Observable((observer) => {
+      this.socket.on(event, (data: any) => {
+        observer.next(data);
+      });
+    });
+  }
+
+  disconnect(): void {
+    this.socket.disconnect();
   }
 }

@@ -9,7 +9,12 @@ dotenv.config();
 
 const app = express();
 const server = http.createServer(app);
-const io = socketIo(server);
+const io = socketIo(server,{
+  cors: {
+    origin: "*",
+    methods: ["GET", "POST", "PUT", "DELETE"],
+  },
+});
 
 app.use(cors());
 app.use(express.json());
@@ -38,11 +43,9 @@ let users = {};
 
 // socket.io connection
 io.on("connection", (socket) => {
-  console.log(`User connected: ${socket.id}`);
   users[socket.id] = socket;
 
   socket.on("disconnect", () => {
-    console.log(`User disconnected: ${socket.id}`);
     delete users[socket.id];
   });
 });

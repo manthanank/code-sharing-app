@@ -5,6 +5,7 @@ const {
   createSnippet,
   updateSnippet,
   getSnippet,
+  deleteSnippet
 } = require("../controllers/snippetController");
 const router = express.Router();
 
@@ -14,5 +15,6 @@ router.get("/", useSocket(getSnippets));
 router.post("/", verifyToken, useSocket(createSnippet));
 router.get("/:id", useSocket(getSnippet));
 router.put("/:id", verifyToken, useSocket(updateSnippet));
+router.delete("/:id", verifyToken, useSocket(deleteSnippet));
 
 module.exports = router;

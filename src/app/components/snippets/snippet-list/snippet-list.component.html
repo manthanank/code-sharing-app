@@ -4,6 +4,14 @@
         <button class="add-snippet-btn" (click)="addSnippet()">Add Snippet</button>
     </div>
     @for (snippet of snippets; track $index) {
-    <pre>{{ snippet.content }}</pre>
+    <div class="snippet-item">
+        <pre>{{ snippet.content }}</pre>
+        <div class="snippet-actions">
+            <button class="edit-snippet-btn" (click)="editSnippet(snippet._id)">Edit</button>
+            <button class="delete-snippet-btn" (click)="deleteSnippet(snippet._id)">Delete</button>
+        </div>
+    </div>
+    }@empty {
+    <p>No snippets found</p>
     }
 </div>

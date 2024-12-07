@@ -1,7 +1,8 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { SnippetService } from '../../../services/snippet.service';
 import { Router } from '@angular/router';
+import { SocketService } from '../../../services/socket.service';
 
 @Component({
   selector: 'app-add-snippet',
@@ -14,7 +15,11 @@ export class AddSnippetComponent {
   snippetDescription: string = '';
   snippetContent: string = '';
 
-  constructor(private snippetService: SnippetService, private router: Router) {}
+  snippetService = inject(SnippetService);
+  router = inject(Router);
+  socket = inject(SocketService);
+
+  constructor() {}
 
   addSnippet() {
     if (
@@ -33,6 +38,7 @@ export class AddSnippetComponent {
     this.snippetService.createSnippet(newSnippet).subscribe({
       next: (data) => {
         this.router.navigate(['/snippets']);
+        this.socket.emitCreateSnippet(data);
       },
       error: (err) => {
         alert('Error adding snippet');

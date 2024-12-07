@@ -48,3 +48,18 @@ exports.updateSnippet = async (req, res, io) => {
   io.emit("updateSnippet", snippet);
   res.json(snippet);
 };
+
+exports.deleteSnippet = async (req, res, io) => {
+  const snippet = await Snippet.findById(req.params.id);
+  if (!snippet) {
+    return res.status(404).json({ message: "Snippet not found" });
+  }
+  if (snippet.author.toString() !== req.user.id) {
+    return res
+      .status(403)
+      .json({ message: "You are not allowed to delete this snippet" });
+  }
+  await snippet.deleteOne();
+  io.emit("deleteSnippet", snippet);
+  res.json({ message: "Snippet deleted successfully" });
+}
