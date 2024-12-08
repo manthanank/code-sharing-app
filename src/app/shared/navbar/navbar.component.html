@@ -1,12 +1,9 @@
-<nav class="navbar">
+<mat-toolbar color="primary">
     <div class="container">
-        <a class="navbar-brand">Code Sharing App</a>
-        <ul class="navbar-nav">
-            @if (isLoggedIn) {
-            <li class="nav-item">
-                <a class="nav-link" (click)="logout()">Logout</a>
-            </li>
-            }
-        </ul>
+        <span class="navbar-brand">Code Sharing App</span>
+        <span class="spacer"></span>
+        @if (isLoggedIn) {
+        <button mat-button (click)="logout()">Logout</button>
+        }
     </div>
-</nav>
+</mat-toolbar>
