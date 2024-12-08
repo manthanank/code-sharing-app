@@ -42,4 +42,8 @@ export class AuthService {
   isLoggedIn(): boolean {
     return !!this.getToken();
   }
+
+  getAuthState(): Observable<string | null> {
+    return this.token.asObservable();
+  }
 }
