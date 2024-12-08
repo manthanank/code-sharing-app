@@ -3,10 +3,13 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { SnippetService } from '../../../services/snippet.service';
 import { SocketService } from '../../../services/socket.service';
 import { FormsModule } from '@angular/forms';
+import { MatButtonModule } from '@angular/material/button';
+import { MatInputModule } from '@angular/material/input';
+import { MatToolbarModule } from '@angular/material/toolbar';
 
 @Component({
   selector: 'app-edit-snippet',
-  imports: [FormsModule],
+  imports: [FormsModule, MatToolbarModule, MatInputModule, MatButtonModule],
   templateUrl: './edit-snippet.component.html',
   styleUrl: './edit-snippet.component.scss',
 })
@@ -64,5 +67,9 @@ export class EditSnippetComponent implements OnInit {
           alert('Error updating snippet');
         },
       });
+  }
+
+  cancelEdit() {
+    this.router.navigate(['/snippets']);
   }
 }

@@ -1,17 +1,29 @@
 <div class="snippet-list">
     <div class="header">
         <h2>Code Snippets</h2>
-        <button class="add-snippet-btn" (click)="addSnippet()">Add Snippet</button>
+        <button mat-raised-button color="primary" (click)="addSnippet()">Add Snippet</button>
     </div>
-    @for (snippet of snippets; track $index) {
-    <div class="snippet-item">
-        <pre>{{ snippet.content }}</pre>
-        <div class="snippet-actions">
-            <button class="edit-snippet-btn" (click)="editSnippet(snippet._id)">Edit</button>
-            <button class="delete-snippet-btn" (click)="deleteSnippet(snippet._id)">Delete</button>
-        </div>
-    </div>
-    }@empty {
-    <p>No snippets found</p>
-    }
+    <mat-accordion>
+        @for (snippet of snippets; track $index) {
+        <mat-expansion-panel>
+            <mat-expansion-panel-header>
+                <mat-panel-title>
+                    {{ snippet.title }}
+                </mat-panel-title>
+            </mat-expansion-panel-header>
+            <mat-card>
+                <mat-card-content>
+                    <pre class="scrollable-content">{{ snippet.content }}</pre>
+                </mat-card-content>
+                <mat-card-actions>
+                    <button mat-button color="accent" (click)="editSnippet(snippet._id)">Edit</button>
+                    <button mat-button color="warn" (click)="deleteSnippet(snippet._id)">Delete</button>
+                </mat-card-actions>
+            </mat-card>
+        </mat-expansion-panel>
+        }
+        @empty {
+        <p>No snippets found</p>
+        }
+    </mat-accordion>
 </div>

@@ -1,9 +1,24 @@
-<div>
-    <h2>Edit Snippet</h2>
-    <input [(ngModel)]="snippetTitle" placeholder="Title" class="w-full border rounded p-2 mb-2" />
-    <input [(ngModel)]="snippetDescription" placeholder="Description" class="w-full border rounded p-2 mb-2" />
-    <textarea [(ngModel)]="snippetContent" placeholder="Content" class="w-full border rounded p-2 mb-2"></textarea>
-    <button (click)="updateSnippet()" class="bg-blue-500 text-white px-4 py-2 rounded">
-        Update Snippet
-    </button>
+<div class="edit-snippet">
+  <h2>Edit Snippet</h2>
+  <mat-form-field class="w-full mb-2">
+    <mat-label>Title</mat-label>
+    <input matInput [(ngModel)]="snippetTitle" placeholder="Title" />
+  </mat-form-field>
+
+  <mat-form-field class="w-full mb-2">
+    <mat-label>Description</mat-label>
+    <input matInput [(ngModel)]="snippetDescription" placeholder="Description" />
+  </mat-form-field>
+
+  <mat-form-field class="w-full mb-2">
+    <mat-label>Content</mat-label>
+    <textarea matInput [(ngModel)]="snippetContent" placeholder="Content"></textarea>
+  </mat-form-field>
+
+  <button mat-raised-button color="primary" (click)="updateSnippet()">
+    Update Snippet
+  </button>
+  <button mat-button color="warn" (click)="cancelEdit()">
+    Cancel
+  </button>
 </div>

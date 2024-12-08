@@ -3,10 +3,19 @@ import { FormsModule } from '@angular/forms';
 import { SnippetService } from '../../../services/snippet.service';
 import { Router } from '@angular/router';
 import { SocketService } from '../../../services/socket.service';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-add-snippet',
-  imports: [FormsModule],
+  imports: [
+    FormsModule,
+    MatToolbarModule,
+    MatInputModule,
+    MatButtonModule,
+    MatInputModule,
+  ],
   templateUrl: './add-snippet.component.html',
   styleUrl: './add-snippet.component.scss',
 })
@@ -44,5 +53,9 @@ export class AddSnippetComponent {
         alert('Error adding snippet');
       },
     });
+  }
+
+  cancelAdd() {
+    this.router.navigate(['/snippets']);
   }
 }

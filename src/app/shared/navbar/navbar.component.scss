@@ -1,24 +1,30 @@
 mat-toolbar {
-    background-color: #3f51b5; // Primary color
-    color: white;
-    .container {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        width: 100%;
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: bold;
-        }
-        .spacer {
-            flex: 1;
-        }
-        button {
-            background-color: white;
-            color: #3f51b5;
-            &:hover {
-                background-color: #e8eaf6;
-            }
-        }
+  background-color: #3f51b5; // Primary color
+  color: white;
+  .container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    .navbar-brand {
+      font-size: 1.5rem;
+      font-weight: bold;
     }
+    .spacer {
+      flex: 1;
+    }
+    button {
+      background-color: white;
+      color: #3f51b5;
+      &:hover {
+        background-color: #e8eaf6;
+      }
+    }
+  }
+}
+
+@media (max-width: 600px) {
+  .logout-button {
+    display: block;
+  }
 }

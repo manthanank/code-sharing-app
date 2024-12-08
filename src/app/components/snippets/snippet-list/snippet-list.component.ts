@@ -4,9 +4,14 @@ import { Router } from '@angular/router';
 import { SocketService } from '../../../services/socket.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { MatCardModule } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatAccordion } from '@angular/material/expansion';
+import { MatExpansionModule } from '@angular/material/expansion';
 
 @Component({
   selector: 'app-snippet-list',
+  imports: [MatCardModule, MatButtonModule, MatAccordion, MatExpansionModule],
   templateUrl: './snippet-list.component.html',
   styleUrl: './snippet-list.component.scss',
 })
@@ -32,20 +37,26 @@ export class SnippetListComponent implements OnInit, OnDestroy {
   }
 
   private subscribeToGetSnippets() {
-    this.socketService.on('getSnippets').pipe(takeUntil(this.destroy$)).subscribe((data: any) => {
-      this.snippets = data;
-    });
+    this.socketService
+      .on('getSnippets')
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((data: any) => {
+        this.snippets = data;
+      });
   }
 
   private loadSnippets() {
-    this.snippetService.getSnippets().pipe(takeUntil(this.destroy$)).subscribe({
-      next: (data) => {
-        this.snippets = data.snippets;
-      },
-      error: () => {
-        alert('Error loading snippets');
-      },
-    });
+    this.snippetService
+      .getSnippets()
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: (data) => {
+          this.snippets = data.snippets;
+        },
+        error: () => {
+          alert('Error loading snippets');
+        },
+      });
   }
 
   addSnippet() {
@@ -53,15 +64,18 @@ export class SnippetListComponent implements OnInit, OnDestroy {
   }
 
   deleteSnippet(id: string) {
-    this.snippetService.deleteSnippet(id).pipe(takeUntil(this.destroy$)).subscribe({
-      next: () => {
-        this.socketService.emitDeleteSnippet(id);
-        this.loadSnippets();
-      },
-      error: () => {
-        alert('Error deleting snippet');
-      },
-    });
+    this.snippetService
+      .deleteSnippet(id)
+      .pipe(takeUntil(this.destroy$))
+      .subscribe({
+        next: () => {
+          this.socketService.emitDeleteSnippet(id);
+          this.loadSnippets();
+        },
+        error: () => {
+          alert('Error deleting snippet');
+        },
+      });
   }
 
   editSnippet(id: string) {
