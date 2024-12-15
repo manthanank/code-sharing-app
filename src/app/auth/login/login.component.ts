@@ -12,7 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
-
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 @Component({
   selector: 'app-login',
   imports: [
@@ -23,6 +23,7 @@ import { MatCardModule } from '@angular/material/card';
     MatFormFieldModule,
     MatCardModule,
     MatLabel,
+    MatSnackBarModule,
   ],
   templateUrl: './login.component.html',
   styleUrl: './login.component.scss',
@@ -37,6 +38,7 @@ export class LoginComponent implements OnInit {
   router = inject(Router);
   socket = inject(SocketService);
   fb = inject(FormBuilder);
+  snackBar = inject(MatSnackBar);
 
   constructor() {
     this.loginForm = this.fb.group({
@@ -60,11 +62,22 @@ export class LoginComponent implements OnInit {
         next: (data) => {
           this.router.navigate(['/snippets']);
           this.socket.emitLogin(data.user);
+          this.loading = false;
+          this.snackBar.open('Login successful', 'Close', {
+            duration: 2000,
+            verticalPosition: 'top',
+            panelClass: 'snackbar-success',
+          });
         },
         error: (err) => {
           console.error(err);
           this.error = err?.error?.error || 'An error occurred';
           this.loading = false;
+          this.snackBar.open(this.error, 'Close', {
+            duration: 2000,
+            verticalPosition: 'top',
+            panelClass: 'snackbar-error',
+          });
         },
       });
     }

@@ -1,4 +1,4 @@
-import { Component, inject, OnInit } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import {
   ReactiveFormsModule,
   FormBuilder,
@@ -12,6 +12,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatButtonModule } from '@angular/material/button';
 import { MatFormFieldModule, MatLabel } from '@angular/material/form-field';
 import { MatCardModule } from '@angular/material/card';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-register',
@@ -23,11 +24,12 @@ import { MatCardModule } from '@angular/material/card';
     MatFormFieldModule,
     MatCardModule,
     MatLabel,
+    MatSnackBarModule,
   ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
-export class RegisterComponent implements OnInit {
+export class RegisterComponent {
   registerForm: FormGroup;
 
   loading = false;
@@ -37,6 +39,7 @@ export class RegisterComponent implements OnInit {
   router = inject(Router);
   socket = inject(SocketService);
   fb = inject(FormBuilder);
+  snackBar = inject(MatSnackBar);
 
   constructor() {
     this.registerForm = this.fb.group({
@@ -44,8 +47,6 @@ export class RegisterComponent implements OnInit {
       password: ['', [Validators.required, Validators.minLength(6)]],
     });
   }
-
-  ngOnInit() {}
 
   onRegister() {
     if (this.registerForm.valid) {
@@ -57,10 +58,20 @@ export class RegisterComponent implements OnInit {
           this.loading = false;
           this.router.navigate(['/snippets']);
           this.socket.emitNewUser(data.user);
+          this.snackBar.open('Registration successful', 'Close', {
+            duration: 2000,
+            verticalPosition: 'top',
+            panelClass: 'snackbar-success',
+          });
         },
         error: (err) => {
           this.loading = false;
           this.error = err.error.error || 'Registration failed';
+          this.snackBar.open(this.error, 'Close', {
+            duration: 2000,
+            verticalPosition: 'top',
+            panelClass: 'snackbar-error',
+          });
         },
       });
     }

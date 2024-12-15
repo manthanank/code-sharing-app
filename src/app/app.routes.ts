@@ -34,5 +34,19 @@ export const routes: Routes = [
         (m) => m.EditSnippetComponent
       ),
   },
+  {
+    path: 'forgot-password',
+    loadComponent: () =>
+      import('./auth/forgot-password/forgot-password.component').then(
+        (m) => m.ForgotPasswordComponent
+      ),
+  },
+  {
+    path: 'reset-password/:token/:email',
+    loadComponent: () =>
+      import('./auth/reset-password/reset-password.component').then(
+        (m) => m.ResetPasswordComponent
+      ),
+  },
   { path: '', redirectTo: 'login', pathMatch: 'full' },
 ];

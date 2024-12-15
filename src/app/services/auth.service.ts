@@ -30,6 +30,23 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string): Observable<any> {
+    return this.http.post(`${this.baseUrl}/forgot-password`, { email });
+  }
+
+  resetPassword(
+    password: string,
+    resetToken: string,
+    email: string
+  ): Observable<any> {
+    return this.http.put(
+      `${this.baseUrl}/reset-password/${resetToken}/${email}`,
+      {
+        password,
+      }
+    );
+  }
+
   getToken(): string | null {
     return sessionStorage.getItem('token');
   }

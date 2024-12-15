@@ -6,10 +6,17 @@ import { FormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 @Component({
   selector: 'app-edit-snippet',
-  imports: [FormsModule, MatToolbarModule, MatInputModule, MatButtonModule],
+  imports: [
+    FormsModule,
+    MatToolbarModule,
+    MatInputModule,
+    MatButtonModule,
+    MatSnackBarModule,
+  ],
   templateUrl: './edit-snippet.component.html',
   styleUrl: './edit-snippet.component.scss',
 })
@@ -23,6 +30,7 @@ export class EditSnippetComponent implements OnInit {
   router = inject(Router);
   socket = inject(SocketService);
   route = inject(ActivatedRoute);
+  snackBar = inject(MatSnackBar);
 
   constructor() {}
 
@@ -35,7 +43,11 @@ export class EditSnippetComponent implements OnInit {
         this.snippetContent = data.content;
       },
       error: (err) => {
-        alert('Error loading snippet');
+        this.snackBar.open('Error loading snippet', 'Close', {
+          duration: 2000,
+          verticalPosition: 'top',
+          panelClass: 'snackbar-error',
+        });
       },
     });
 
@@ -48,7 +60,11 @@ export class EditSnippetComponent implements OnInit {
       !this.snippetDescription ||
       !this.snippetContent
     ) {
-      alert('Please fill in all fields');
+      this.snackBar.open('Please fill in all fields', 'Close', {
+        duration: 2000,
+        verticalPosition: 'top',
+        panelClass: 'snackbar-error',
+      });
       return;
     }
     const updatedSnippet = {
@@ -64,7 +80,11 @@ export class EditSnippetComponent implements OnInit {
           this.socket.emitUpdateSnippet(data);
         },
         error: (err) => {
-          alert('Error updating snippet');
+          this.snackBar.open('Error updating snippet', 'Close', {
+            duration: 2000,
+            verticalPosition: 'top',
+            panelClass: 'snackbar-error',
+          });
         },
       });
   }
