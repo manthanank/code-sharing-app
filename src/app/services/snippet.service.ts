@@ -1,34 +1,56 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable } from 'rxjs';
+import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment.development';
+import { HttpErrorResponse } from '@angular/common/http';
+import { Snippet, Snippets } from '../models/snippet.model';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class SnippetService {
+  private apiUrl = `${environment.apiUrl}/snippets`;
 
-  private apiUrl = environment.apiUrl + '/snippets';
+  http = inject(HttpClient);
 
-  constructor(private http: HttpClient) {}
+  constructor() {}
 
-  getSnippets(): Observable<any> {
-    return this.http.get(this.apiUrl);
+  getSnippets(page: number = 1): Observable<Snippets> {
+    return this.http
+      .get<Snippets>(`${this.apiUrl}?page=${page}`)
+      .pipe(catchError(this.handleError));
   }
 
-  createSnippet(snippet: any): Observable<any> {
-    return this.http.post(this.apiUrl, snippet);
+  createSnippet(
+    snippet: Omit<Snippet, '_id' | 'createdAt' | 'updatedAt' | '__v'>
+  ): Observable<Snippet> {
+    return this.http
+      .post<Snippet>(this.apiUrl, snippet)
+      .pipe(catchError(this.handleError));
   }
 
-  getSnippet(id: string): Observable<any> {
-    return this.http.get(`${this.apiUrl}/${id}`);
+  getSnippet(id: string): Observable<Snippet> {
+    return this.http
+      .get<Snippet>(`${this.apiUrl}/${id}`)
+      .pipe(catchError(this.handleError));
   }
 
-  updateSnippet(id: string, snippet: any): Observable<any> {
-    return this.http.put(`${this.apiUrl}/${id}`, snippet);
+  updateSnippet(id: string, snippet: Partial<Snippet>): Observable<Snippet> {
+    return this.http
+      .put<Snippet>(`${this.apiUrl}/${id}`, snippet)
+      .pipe(catchError(this.handleError));
   }
 
-  deleteSnippet(id: string): Observable<any> {
-    return this.http.delete(`${this.apiUrl}/${id}`);
+  deleteSnippet(id: string): Observable<void> {
+    return this.http
+      .delete<void>(`${this.apiUrl}/${id}`)
+      .pipe(catchError(this.handleError));
+  }
+
+  private handleError(error: HttpErrorResponse): Observable<never> {
+    console.error('An error occurred:', error);
+    return throwError(
+      () => new Error('Something went wrong; please try again later.')
+    );
   }
 }

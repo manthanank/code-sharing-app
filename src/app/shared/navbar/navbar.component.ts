@@ -1,37 +1,44 @@
-import { Component, inject, OnInit, OnDestroy } from '@angular/core';
+import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
-import { AuthService } from '../../services/auth.service';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { Subject, takeUntil } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-navbar',
+  standalone: true,
   imports: [MatToolbarModule, MatButtonModule, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
-export class NavbarComponent implements OnInit, OnDestroy {
-  isLoggedIn: boolean = false;
-  auth = inject(AuthService);
-  router = inject(Router);
-  private destroy$ = new Subject<void>();
+export class NavbarComponent implements OnInit {
+  private readonly authService = inject(AuthService);
+  private readonly router = inject(Router);
+  private readonly destroyRef = inject(DestroyRef);
 
-  ngOnInit() {
-    this.auth.getAuthState()
-      .pipe(takeUntil(this.destroy$))
-      .subscribe(token => {
-        this.isLoggedIn = !!token;
+  isLoggedIn = false;
+
+  constructor() {
+    this.initializeAuthState();
+  }
+
+  ngOnInit(): void {
+    // Check initial token state
+    this.isLoggedIn = Boolean(this.authService.getToken());
+  }
+
+  private initializeAuthState(): void {
+    this.authService
+      .getAuthState()
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((token) => {
+        this.isLoggedIn = Boolean(token);
       });
   }
 
-  ngOnDestroy() {
-    this.destroy$.next();
-    this.destroy$.complete();
-  }
-
-  logout() {
-    this.auth.logout();
-    this.router.navigate(['/login']);
+  logout(): void {
+    this.authService.logout();
+    void this.router.navigate(['/login']);
   }
 }

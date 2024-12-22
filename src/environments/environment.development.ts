@@ -1,5 +1,5 @@
 export const environment = {
-  production: false,
+  production: true,
   socketUrl:
     window.location.hostname === 'localhost'
       ? 'http://localhost:3000/'

@@ -9,6 +9,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatAccordion } from '@angular/material/expansion';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { Snippet } from '../../../models/snippet.model';
 
 @Component({
   selector: 'app-snippet-list',
@@ -23,7 +24,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
   styleUrl: './snippet-list.component.scss',
 })
 export class SnippetListComponent implements OnInit, OnDestroy {
-  snippets: any[] = [];
+  snippets: Snippet[] = [];
   private destroy$ = new Subject<void>();
 
   snippetService = inject(SnippetService);

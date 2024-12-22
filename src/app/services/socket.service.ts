@@ -46,9 +46,9 @@ export class SocketService {
     this.socket.emit('deleteSnippet', id);
   }
 
-  on(event: string): Observable<any> {
+  on<T>(event: string): Observable<T> {
     return new Observable((observer) => {
-      this.socket.on(event, (data: any) => {
+      this.socket.on(event, (data: T) => {
         observer.next(data);
       });
     });
