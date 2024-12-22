@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const socketIo = require("socket.io");
+const connectDB = require("./config/db");
 
 dotenv.config();
 
@@ -20,16 +21,7 @@ app.use(cors({ origin: "*" }));
 app.use(express.json());
 
 // MongoDB connection
-const dbUser = process.env.MONGODB_USER;
-const dbPassword = process.env.MONGODB_PASSWORD;
-const dbName = process.env.MONGODB_DBNAME || "codingsharingdb";
-
-const mongoURI = `mongodb+srv://${dbUser}:${dbPassword}@cluster0.re3ha3x.mongodb.net/${dbName}?retryWrites=true&w=majority`;
-
-mongoose
-  .connect(mongoURI)
-  .then(() => console.log("MongoDB connected successfully"))
-  .catch((err) => console.error("MongoDB connection error:", err));
+connectDB();
 
 app.set("io", io);
 // Routes
