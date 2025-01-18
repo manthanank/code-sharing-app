@@ -5,7 +5,7 @@ import { inject, Injectable } from '@angular/core';
   providedIn: 'root',
 })
 export class TrackService {
-  apiURL = 'https://visitor-tracking-api.vercel.app/api';
+  apiURL = 'https://visitor-tracking-api.vercel.app/api/visit';
 
   http = inject(HttpClient);
 
