@@ -49,7 +49,7 @@ export class LoginComponent implements OnInit {
 
   ngOnInit() {
     if (this.authService.isLoggedIn()) {
-      this.router.navigate(['/snippets']);
+      this.router.navigate(['/']);
     }
   }
 
@@ -60,7 +60,7 @@ export class LoginComponent implements OnInit {
       const { email, password } = this.loginForm.value;
       this.authService.login(email, password).subscribe({
         next: (data) => {
-          this.router.navigate(['/snippets']);
+          this.router.navigate(['/']);
           this.socket.emitLogin(data.user);
           this.loading = false;
           this.snackBar.open('Login successful', 'Close', {

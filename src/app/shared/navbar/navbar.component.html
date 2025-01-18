@@ -3,7 +3,11 @@
         <span class="navbar-brand" routerLink="/">Code Sharing App</span>
         <span class="spacer"></span>
         @if (isLoggedIn) {
+        <button mat-button routerLink="/snippets">Snippets</button>
         <button mat-button (click)="logout()">Logout</button>
+        } 
+        @else {
+        <button mat-button routerLink="/login">Login</button>
         }
     </div>
 </mat-toolbar>

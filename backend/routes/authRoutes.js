@@ -5,6 +5,7 @@ const {
   getCurrentUser,
   forgotPassword,
   resetPassword,
+  logout,
 } = require("../controllers/authController");
 const { verifyToken } = require("../middleware/authMiddleware");
 
@@ -19,5 +20,6 @@ router.post("/login", useSocket(login));
 router.post("/forgot-password", useSocket(forgotPassword));
 router.put("/reset-password/:token/:email", useSocket(resetPassword));
 router.get("/me", verifyToken, useSocket(getCurrentUser));
+router.post("/logout", useSocket(logout));
 
 module.exports = router;

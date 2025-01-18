@@ -7,10 +7,14 @@
     "dev": "nodemon index.js",
     "start": "node --watch index.js"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "",
+  "keywords": [
+    "node",
+    "express",
+    "mongoose"
+  ],
+  "author": "Manthan Ankolekar",
+  "license": "MIT",
+  "description": "Backend for the code sharing app",
   "dependencies": {
     "bcrypt": "^5.1.1",
     "body-parser": "^1.20.3",

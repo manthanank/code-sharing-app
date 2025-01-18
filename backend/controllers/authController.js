@@ -13,24 +13,24 @@ exports.register = async (req, res, io) => {
       return res.status(400).json({ error: "User already exists" });
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const newUser = new User({ email, password: hashedPassword });
-    await newUser.save();
+    const user = new User({ email, password: hashedPassword });
+    await user.save();
 
     const token = jwt.sign(
-      { id: newUser._id, email: newUser.email },
+      { id: user._id, email: user.email },
       process.env.JWT_SECRET,
       {
         expiresIn: "1h",
       }
     );
 
-    if (io) io.emit("newUser", { id: newUser._id, email: newUser.email });
+    if (io) io.emit("register", { id: user._id, email: user.email });
 
     res.status(201).json({
       token,
       user: {
-        id: newUser._id,
-        email: newUser.email,
+        id: user._id,
+        email: user.email,
       },
     });
   } catch (error) {
@@ -150,6 +150,17 @@ exports.resetPassword = async (req, res, io) => {
     if (io) io.emit("resetPassword", { id: user._id, email: user.email });
 
     res.status(200).json({ message: "Password reset successful" });
+  } catch (error) {
+    res.status(500).json({ error: "Server error" });
+  }
+};
+
+
+exports.logout = async (req, res, io) => {
+  try {
+    if (io) io.emit("logout", { id: req.body.id, email: req.body.email });
+
+    res.status(200).json({ message: "Logout successful" });
   } catch (error) {
     res.status(500).json({ error: "Server error" });
   }
