@@ -1,5 +1,15 @@
 const Snippet = require("../models/Snippet");
 
+exports.getSnippet = async (req, res) => {
+  try {
+    const snippet = await Snippet.findById(req.params.id);
+    res.status(200).json(snippet);
+  } catch (error) {
+    console.error('Error getting snippet:', error);
+    res.status(500).json({ message: 'Internal server error' });
+  }
+};
+
 exports.addUpdateSnippet = async (req, res, io) => {
   try {
     const { _id, title = '', content = ''} = req.body;

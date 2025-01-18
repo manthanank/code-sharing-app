@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal, computed } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
@@ -6,7 +6,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { ActivatedRoute } from '@angular/router';
 import { SnippetService } from '../../services/snippet.service';
-import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
+import { debounceTime, distinctUntilChanged, BehaviorSubject } from 'rxjs';
 import { DatePipe } from '@angular/common';
 import { SocketService } from '../../services/socket.service';
 import { MatIconModule } from '@angular/material/icon';
@@ -37,19 +37,21 @@ export class SnippetComponent implements OnInit {
   private snackBar = inject(MatSnackBar);
   private datePipe = inject(DatePipe);
 
-  id = signal<string>(this.route.snapshot.params['id']);
-  snippet = computed(() => this.snippetForm.value);
+  id: string = this.route.snapshot.params['id'];
+  private lastSavedSnippet = new BehaviorSubject<{ title: string; content: string }>({ title: '', content: '' });
 
   constructor() {
-    const formattedDate = this.datePipe.transform(new Date(), 'MMM d, h:mm a');
     this.snippetForm = this.fb.group({
-      title: [formattedDate],
+      title: [''],
       content: [''],
     });
   }
 
   ngOnInit(): void {
-    this.saveSnippet();
+    // Load snippet data on init
+    this.loadSnippet();
+
+    // Set up form change handling
     this.snippetForm.valueChanges
       .pipe(
         debounceTime(300),
@@ -62,14 +64,29 @@ export class SnippetComponent implements OnInit {
           );
         })
       )
-      .subscribe({
-        next: (value) => {
-          this.saveSnippet();
-        },
-      });
+      .subscribe(() => this.saveSnippet());
 
+    // Handle real-time updates from the socket
     this.socketService.on('addUpdateSnippet', (data) => {
       this.snippetForm.patchValue(data);
+      this.lastSavedSnippet.next(data);
+    });
+  }
+
+  private loadSnippet(): void {
+    // Fetch snippet from the backend
+    this.snippetService.getSnippet(this.id).subscribe({
+      next: (snippet) => {
+        if (snippet) {
+          this.snippetForm.patchValue(snippet);
+          this.lastSavedSnippet.next(snippet);
+        } else {
+          // Initialize a new snippet with a default title if not found
+          const formattedDate = this.datePipe.transform(new Date(), 'MMM d, h:mm a');
+          this.snippetForm.patchValue({ title: formattedDate, content: '' });
+        }
+      },
+      error: () => this.showSnackBar('Error loading snippet'),
     });
   }
 
@@ -77,22 +94,27 @@ export class SnippetComponent implements OnInit {
     const formValue = this.snippetForm.value;
 
     const newSnippet = {
-      _id: this.id(),
+      _id: this.id,
       title: formValue?.title || '',
       content: formValue?.content || '',
     };
 
-    this.snippetService.addUpdateSnippet(newSnippet).subscribe({
-      next: (data) => {
-        this.socketService.emit('addUpdateSnippet', newSnippet);
-      },
-      error: () => this.showSnackBar('Error creating snippet'),
-    });
+    // Compare with last saved snippet to prevent redundant updates
+    const lastSaved = this.lastSavedSnippet.getValue();
+    if (lastSaved.title !== newSnippet.title || lastSaved.content !== newSnippet.content) {
+      this.snippetService.addUpdateSnippet(newSnippet).subscribe({
+        next: (data) => {
+          this.socketService.emit('addUpdateSnippet', newSnippet);
+          this.lastSavedSnippet.next(newSnippet);
+        },
+        error: () => this.showSnackBar('Error saving snippet'),
+      });
+    }
   }
 
   shareSnippet(): void {
     const url = window.location.href;
-    navigator.share({ title: 'Snippet', text: this.snippet().content, url });
+    navigator.share({ title: 'Snippet', text: this.snippetForm.value.content, url });
   }
 
   private showSnackBar(message: string): void {
