@@ -2,7 +2,9 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { Meta } from '@angular/platform-browser';
+import { HttpClient } from '@angular/common/http';
 import { FooterComponent } from "./shared/footer/footer.component";
+import { environment } from '../environments/environment';
 
 @Component({
   selector: 'app-root',
@@ -12,7 +14,9 @@ import { FooterComponent } from "./shared/footer/footer.component";
 })
 export class AppComponent {
   title = 'code-sharing-app';
+  apiURL = environment.apiUrl + '/visit';
   meta = inject(Meta);
+  http = inject(HttpClient);
 
   constructor() {
     this.meta.addTags([
@@ -46,5 +50,20 @@ export class AppComponent {
         content: 'https://code-sharing-app-manthanank.vercel.app/',
       },
     ]);
+  }
+
+  ngOnInit() {
+    this.http
+    .post(this.apiURL, {
+      projectName: this.title,
+    })
+    .subscribe({
+      next: (response) => {
+        console.log('Data posted successfully:', response);
+      },
+      error: (error) => {
+        console.error('Error posting data:', error);
+      },
+    });
   }
 }
