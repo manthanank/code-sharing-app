@@ -4,5 +4,49 @@
     padding: 0;
     box-sizing: border-box;
 }
+
 html, body { height: 100%; }
-body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }
+body { 
+    margin: 0; 
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+    background-color: #ffffff;
+    color: #333333;
+    transition: background-color 0.3s ease, color 0.3s ease;
+
+    h1, h2, h3, h4, h5, h6, p, span, div {
+        color: inherit;
+    }
+}
+
+/* Dark mode styles */
+body.dark-mode {
+    background-color: #121212;
+    color: #ffffff;
+
+    /* Override Material components for dark mode */
+    .mat-app-background {
+        background-color: #121212;
+    }
+
+    .mat-form-field {
+        color: #ffffff;
+    }
+
+    .mat-form-field-label {
+        color: rgba(255, 255, 255, 0.7);
+    }
+
+    textarea, input {
+        color: #ffffff !important;
+        background-color: #1e1e1e;
+        caret-color: #ffffff;
+    }
+
+    .mat-toolbar.mat-primary {
+        background-color: #1e1e1e;
+    }
+
+    ::placeholder {
+        color: rgba(255, 255, 255, 0.5);
+    }
+}

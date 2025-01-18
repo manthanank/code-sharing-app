@@ -1,0 +1,17 @@
+<form [formGroup]="snippetForm" class="snippet-form">
+    <div class="form-header">
+        <mat-form-field class="form-field" appearance="outline">
+            <mat-label>Snippet Title</mat-label>
+            <input matInput formControlName="title" placeholder="Enter a descriptive title" />
+        </mat-form-field>
+        
+        <button mat-icon-button (click)="shareSnippet()" matTooltip="Share snippet URL">
+            <mat-icon>share</mat-icon>
+        </button>
+    </div>
+
+    <mat-form-field class="form-field" appearance="outline">
+        <mat-label>Snippet Content</mat-label>
+        <textarea matInput formControlName="content" placeholder="Paste your code here..." rows="8"></textarea>
+    </mat-form-field>
+</form>

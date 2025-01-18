@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { catchError, Observable, throwError } from 'rxjs';
 import { environment } from '../../environments/environment.development';
 import { HttpErrorResponse } from '@angular/common/http';
-import { Snippet, Snippets } from '../models/snippet.model';
+import { Snippet } from '../models/snippet.model';
 
 @Injectable({
   providedIn: 'root',
@@ -15,29 +15,17 @@ export class SnippetService {
 
   constructor() {}
 
-  getSnippets(page: number = 1): Observable<Snippets> {
-    return this.http
-      .get<Snippets>(`${this.apiUrl}?page=${page}`)
-      .pipe(catchError(this.handleError));
-  }
-
-  createSnippet(
+  addUpdateSnippet(
     snippet: Omit<Snippet, '_id' | 'createdAt' | 'updatedAt' | '__v'>
   ): Observable<Snippet> {
     return this.http
-      .post<Snippet>(this.apiUrl, snippet)
+      .put<Snippet>(this.apiUrl, snippet)
       .pipe(catchError(this.handleError));
   }
 
   getSnippet(id: string): Observable<Snippet> {
     return this.http
       .get<Snippet>(`${this.apiUrl}/${id}`)
-      .pipe(catchError(this.handleError));
-  }
-
-  updateSnippet(id: string, snippet: Partial<Snippet>): Observable<Snippet> {
-    return this.http
-      .put<Snippet>(`${this.apiUrl}/${id}`, snippet)
       .pipe(catchError(this.handleError));
   }
 

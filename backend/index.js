@@ -1,6 +1,5 @@
 const express = require("express");
 const http = require("http");
-const mongoose = require("mongoose");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const socketIo = require("socket.io");
@@ -29,7 +28,6 @@ app.get("", (req, res) => {
   res.send("API is running....");
 });
 app.use("/api/snippets", require("./routes/snippetRoutes"));
-app.use("/api/auth", require("./routes/authRoutes.js"));
 
 let users = {};
 

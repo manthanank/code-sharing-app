@@ -1,0 +1,81 @@
+.snippet-form {
+  max-width: 100%;
+  padding: 1.5rem;
+  border-radius: 8px;
+  display: flex;
+  flex-direction: column;
+
+  .form-field {
+    width: 100%;
+    .mat-form-field-outline {
+      border-radius: 6px;
+    }
+
+    mat-label {
+      font-size: 0.9rem;
+      color: #555;
+    }
+
+    input,
+    textarea {
+      font-size: 1rem;
+    }
+
+    textarea {
+      height: calc(88vh - 200px);
+    }
+  }
+
+  .form-header {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+
+    .form-field {
+      flex: 1;
+    }
+
+    button {
+      margin-top: -1rem; // Align with form field
+    }
+  }
+
+  @media (max-width: 768px) {
+    padding: 1rem;
+
+    .form-field {
+      mat-label {
+        font-size: 0.8rem;
+      }
+
+      input,
+      textarea {
+        font-size: 0.9rem;
+      }
+
+      textarea {
+        height: calc(82vh - 150px);
+      }
+    }
+  }
+
+  @media (max-width: 480px) {
+    padding: 0.5rem;
+
+    .form-field {
+      mat-label {
+        font-size: 0.7rem;
+      }
+
+      input,
+      textarea {
+        font-size: 0.8rem;
+      }
+
+      textarea {
+        height: calc(78vh - 100px);
+      }
+    }
+  }
+}

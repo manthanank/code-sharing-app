@@ -1,44 +1,37 @@
-import { Component, DestroyRef, inject, OnInit } from '@angular/core';
-import { Router, RouterLink } from '@angular/router';
+import { Component, OnInit } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatButtonModule } from '@angular/material/button';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { AuthService } from '../../services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [MatToolbarModule, MatButtonModule, RouterLink],
+  imports: [MatToolbarModule, MatButtonModule, MatIconModule, RouterLink],
   templateUrl: './navbar.component.html',
   styleUrl: './navbar.component.scss',
 })
 export class NavbarComponent implements OnInit {
-  private readonly authService = inject(AuthService);
-  private readonly router = inject(Router);
-  private readonly destroyRef = inject(DestroyRef);
+  isDarkMode = false;
 
-  isLoggedIn = false;
-
-  constructor() {
-    this.initializeAuthState();
-  }
+  constructor() {}
 
   ngOnInit(): void {
-    // Check initial token state
-    this.isLoggedIn = Boolean(this.authService.getToken());
+    this.isDarkMode = localStorage.getItem('darkMode') === 'true';
+    this.updateDarkMode();
   }
 
-  private initializeAuthState(): void {
-    this.authService
-      .getAuthState()
-      .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe((token) => {
-        this.isLoggedIn = Boolean(token);
-      });
+  toggleDarkMode(): void {
+    this.isDarkMode = !this.isDarkMode;
+    localStorage.setItem('darkMode', this.isDarkMode.toString());
+    this.updateDarkMode();
   }
 
-  logout(): void {
-    this.authService.logout();
-    void this.router.navigate(['/']);
+  updateDarkMode(): void {
+    if (this.isDarkMode) {
+      document.body.classList.add('dark-mode');
+    } else {
+      document.body.classList.remove('dark-mode');
+    }
   }
 }
