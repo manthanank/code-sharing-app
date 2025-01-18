@@ -4,11 +4,21 @@
             <mat-label>Snippet Title</mat-label>
             <input matInput formControlName="title" placeholder="Enter a descriptive title" />
         </mat-form-field>
+
+        <mat-form-field class="form-field" appearance="outline" disabled>
+            <mat-label>Expires At</mat-label>
+            <input matInput formControlName="expiresAt" placeholder="Expiration time" />
+        </mat-form-field>
         
         <button mat-icon-button (click)="shareSnippet()" matTooltip="Share snippet URL">
             <mat-icon>share</mat-icon>
         </button>
+
+        <button mat-icon-button (click)="deleteSnippet()" matTooltip="Delete snippet">
+            <mat-icon>delete</mat-icon>
+        </button>
     </div>
+
 
     <mat-form-field class="form-field" appearance="outline">
         <mat-label>Snippet Content</mat-label>

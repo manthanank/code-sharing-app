@@ -3,7 +3,7 @@
   font-family: Arial, sans-serif;
 
   .hero {
-    padding: 170px 20px;
+    padding: calc(50vh - 140px) 20px;
 
     .hero-content {
       max-width: 600px;
@@ -38,7 +38,7 @@
 
   @media (max-width: 768px) {
     .hero {
-      padding: 140px 10px;
+      padding: calc(40vh - 70px) 10px;
 
       .hero-content {
         max-width: 90%;
@@ -61,8 +61,8 @@
 
   @media (max-width: 480px) {
     .hero {
-      padding: 140px 5px;
-
+      padding: calc(30vh - 5px) 5px;
+      
       .hero-content {
         max-width: 100%;
 

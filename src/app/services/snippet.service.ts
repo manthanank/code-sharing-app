@@ -16,7 +16,7 @@ export class SnippetService {
   constructor() {}
 
   addUpdateSnippet(
-    snippet: Omit<Snippet, '_id' | 'createdAt' | 'updatedAt' | '__v'>
+    snippet: Omit<Snippet, '_id' | 'createdAt' | 'updatedAt' | '__v' | 'expiresAt'>
   ): Observable<Snippet> {
     return this.http
       .put<Snippet>(this.apiUrl, snippet)

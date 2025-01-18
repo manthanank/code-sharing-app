@@ -4,7 +4,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatToolbarModule } from '@angular/material/toolbar';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { SnippetService } from '../../services/snippet.service';
 import { debounceTime, distinctUntilChanged, BehaviorSubject } from 'rxjs';
 import { DatePipe } from '@angular/common';
@@ -34,16 +34,18 @@ export class SnippetComponent implements OnInit {
   private snippetService = inject(SnippetService);
   private socketService = inject(SocketService);
   private route = inject(ActivatedRoute);
+  private router = inject(Router);
   private snackBar = inject(MatSnackBar);
   private datePipe = inject(DatePipe);
 
   id: string = this.route.snapshot.params['id'];
-  private lastSavedSnippet = new BehaviorSubject<{ title: string; content: string }>({ title: '', content: '' });
+  private lastSavedSnippet = new BehaviorSubject<{ title: string; content: string; expiresAt?: string }>({ title: '', content: '' });
 
   constructor() {
     this.snippetForm = this.fb.group({
       title: [''],
       content: [''],
+      expiresAt: [{ value: '', disabled: true }],
     });
   }
 
@@ -68,7 +70,8 @@ export class SnippetComponent implements OnInit {
 
     // Handle real-time updates from the socket
     this.socketService.on('addUpdateSnippet', (data) => {
-      this.snippetForm.patchValue(data);
+      const formattedExpiresAt = this.datePipe.transform(data.expiresAt, 'MMM d, h:mm a');
+      this.snippetForm.patchValue({ ...data, expiresAt: formattedExpiresAt });
       this.lastSavedSnippet.next(data);
     });
   }
@@ -78,7 +81,8 @@ export class SnippetComponent implements OnInit {
     this.snippetService.getSnippet(this.id).subscribe({
       next: (snippet) => {
         if (snippet) {
-          this.snippetForm.patchValue(snippet);
+          const formattedExpiresAt = this.datePipe.transform(snippet.expiresAt, 'MMM d, h:mm a');
+          this.snippetForm.patchValue({ ...snippet, expiresAt: formattedExpiresAt });
           this.lastSavedSnippet.next(snippet);
         } else {
           // Initialize a new snippet with a default title if not found
@@ -115,6 +119,21 @@ export class SnippetComponent implements OnInit {
   shareSnippet(): void {
     const url = window.location.href;
     navigator.share({ title: 'Snippet', text: this.snippetForm.value.content, url });
+  }
+
+  deleteSnippet(): void {
+    const confirmed = window.confirm('Are you sure you want to delete this snippet?');
+    if (confirmed) {
+      this.snippetService.deleteSnippet(this.id).subscribe({
+        next: () => {
+          this.socketService.emit('deleteSnippet', this.id);
+          this.showSnackBar('Snippet deleted');
+          this.snippetForm.reset();
+          this.router.navigate(['/']);
+        },
+        error: () => this.showSnackBar('Error deleting snippet'),
+      });
+    }
   }
 
   private showSnackBar(message: string): void {
