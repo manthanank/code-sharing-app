@@ -2,9 +2,8 @@ import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NavbarComponent } from './shared/navbar/navbar.component';
 import { Meta } from '@angular/platform-browser';
-import { HttpClient } from '@angular/common/http';
 import { FooterComponent } from "./shared/footer/footer.component";
-import { environment } from '../environments/environment';
+import { TrackService } from './services/track.service';
 
 @Component({
   selector: 'app-root',
@@ -14,9 +13,8 @@ import { environment } from '../environments/environment';
 })
 export class AppComponent {
   title = 'code-sharing-app';
-  apiURL = environment.apiUrl + '/visit';
   meta = inject(Meta);
-  http = inject(HttpClient);
+  trackService = inject(TrackService);
 
   constructor() {
     this.meta.addTags([
@@ -53,17 +51,6 @@ export class AppComponent {
   }
 
   ngOnInit() {
-    this.http
-    .post(this.apiURL, {
-      projectName: this.title,
-    })
-    .subscribe({
-      next: (response) => {
-        console.log('Data posted successfully:', response);
-      },
-      error: (error) => {
-        console.error('Error posting data:', error);
-      },
-    });
+    this.trackService.trackProjectVisit('code-sharing-app');
   }
 }
